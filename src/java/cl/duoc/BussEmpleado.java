@@ -9,8 +9,8 @@ import java.util.List;
 
 public class BussEmpleado {
 
-    public List<Empleado> Listar() {
-        List<Empleado> lista = new ArrayList<>();
+    public ArrayList<Empleado> Listar() {
+        ArrayList<Empleado> lista = new ArrayList<>();
         try {
             Conectar db = new Conectar();
             Connection conn = db.conectarMySQL();
@@ -111,4 +111,25 @@ public class BussEmpleado {
         return std;
     }
 
+    public int montoBono(String rut) {
+        int result = 0;
+        Empleado obj = new Empleado();
+        try{
+            Conectar db = new Conectar();
+            Connection conn = db.conectarMySQL();
+            String sql = "SELECT * FROM empleado WHERE rut = ? ";
+            PreparedStatement pstm = conn.prepareStatement(sql);
+            pstm.setString(1, rut);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                obj.setAntiguedad(rs.getInt("antiguedad"));
+            }
+            if (obj.getAntiguedad() > 3) {
+                result = obj.getAntiguedad()* 50000;
+            }
+        } catch (SQLException exe) {
+            System.out.println(exe.getMessage());
+        }
+        return result;
+    }
 }
